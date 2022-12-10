@@ -1,4 +1,5 @@
 import os
+import time
 from collections import namedtuple
 
 def clear():
@@ -30,8 +31,9 @@ class ProblemSetBaseClass:
 
 class InteractiveSession:
 
-    def __init__(self, problem_set):
-        self.problem_set
+    def __init__(self, problem_set, clear=True):
+        self.problem_set = problem_set
+        self.clear = clear
 
     def __call__(self):
         if not self.problem_set:
@@ -40,7 +42,8 @@ class InteractiveSession:
         n_correct = 0
         missed = list()
 
-        for problem in self.problems:
+        start = time.time()
+        for problem in self.problem_set:
 
             prompt = problem.prompt
             print(prompt)
@@ -53,6 +56,9 @@ class InteractiveSession:
             
             if self.clear:
                 clear()
+        end = time.time()
 
-        return n_correct, self.n, missed
+        problems_per_second = (end - start) / len(self.problem_set)
+
+        return n_correct, len(self.problem_set), missed, problems_per_second
     
