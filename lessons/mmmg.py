@@ -12,7 +12,7 @@ class Lesson1(ProblemSetBaseClass):
 
     """ One Step at a Time
     
-    Skill: add multiples of powers of ten
+    Adding multiples of powers of ten
     """
 
     prompt = "{0} + {1} + {2} = "
@@ -39,9 +39,9 @@ class Lesson1(ProblemSetBaseClass):
     
 class Lesson2(ProblemSetBaseClass):
 
-    """ Using Place Values
+    """ Using Place Values Names
     
-
+    Adding multiples of power of ten
     """
     prompt = "{0} + {1} = "
 
@@ -74,8 +74,9 @@ class Lesson3(ProblemSetBaseClass):
 
 class Lesson4(ProblemSetBaseClass):
     
-    """ Break it Up 1
-    
+    """ Break it Up #1
+
+    Adding by expanding the second addened
     """
     prompt = "{0} + {1} + {2} = "
 
@@ -107,8 +108,9 @@ class Lesson4(ProblemSetBaseClass):
 
 class Lesson5(ProblemSetBaseClass):
     
-    """ Break it Up 1
+    """ Break it Up #2
     
+    Adding by expanding the second addend
     """
     prompt = "{0} + {1} + {2} = "
 
@@ -130,7 +132,10 @@ class Lesson5(ProblemSetBaseClass):
 
 
 class Lesson6(ProblemSetBaseClass):
-    """ Dropping common zeros"""
+    """ Dropping common zeros
+
+    Subtracting multiples of powers of ten
+    """
 
     prompt1 = "{0} - {1}"
     prompt2 = "{0} - {1} - {2}"
@@ -177,7 +182,10 @@ class Lesson6(ProblemSetBaseClass):
 
 
 class Lesson7(ProblemSetBaseClass):
-    """ Dropping common zeros """
+    """ Dropping common zeros 
+    
+    Subtracting multiples of ten
+    """
     prompt = "{0} - {1}"
 
     def __init__(self):
@@ -197,7 +205,10 @@ class Lesson7(ProblemSetBaseClass):
 
     
 class Lesson8(ProblemSetBaseClass):
-    """ Front-end Focus """
+    """ Front-end Focus 
+    
+    Subtracting numbers ending in the same digits
+    """
     prompt = "{0} - {1}"
 
 
@@ -229,7 +240,10 @@ class Lesson8(ProblemSetBaseClass):
 #### unit 2 ####
 
 class Lesson10(ProblemSetBaseClass):
-    """ Starting at the left """
+    """ Starting at the left 
+    
+    Adding from the front end (when regrouping is needed)
+    """
     prompt = "{0} + {1}"
 
 
@@ -253,7 +267,10 @@ class Lesson10(ProblemSetBaseClass):
 
 
 class Lesson11(ProblemSetBaseClass):
-    """ Starting at the left """
+    """ Starting at the left 
+    
+    Subtracting from the front end (when no regrouping is needed)
+    """
     prompt = "{0} - {1}"
 
 
@@ -284,7 +301,11 @@ class Lesson11(ProblemSetBaseClass):
 
 
 class Lesson12(ProblemSetBaseClass):
-    """ Working with Fives """
+    """ Working with Fives 
+    
+    
+    Adding by expanding to numbers ending in 5
+    """
 
     prompt = "{0} + {1}"
 
