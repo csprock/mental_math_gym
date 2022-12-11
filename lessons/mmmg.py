@@ -325,3 +325,143 @@ class Lesson12(ProblemSetBaseClass):
 
         return Problem(ans, [n1, n2], self.prompt.format(*[n1, n2]))
 
+
+class Lesson13(ProblemSetBaseClass):
+    """ Trading off
+    
+    Adding by making multiples of ten then adjusting
+    """
+
+    prompt = "{0} + {1}"
+
+    def __init__(self):
+        super().__init__()
+
+
+    def new_problem(self):
+
+        b = random.randint(2, 9) * 10
+        d = random.randint(7,9)
+        n = b + d
+        m = random.randint(11, 99)
+
+        numbers = [n, m]
+        ans = n + m
+
+        random.shuffle(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson14(ProblemSetBaseClass):
+    """ Balancing Subtraction
+    
+    Subtracting by making multiples of ten and adjusting
+    """
+
+
+    prompt = "{0} - {1}"
+
+    def __init__(self):
+        super().__init__()
+
+
+    def new_problem(self):
+
+        b = random.randint(2, 9) * 10
+        d = random.randint(7, 9)
+        n = b + d
+        m = random.randint(n+1, 999)
+        
+        numbers = [m, n]
+        ans = m - n
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson15(ProblemSetBaseClass):
+    """ Searching for Compatibles 
+    
+    Identifying pairs that sum to 100 and 1000
+    """
+
+    prompt_add = "{0} + {1}"
+    prompt_sub = "{0} - {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+
+        if random.random() < 0.5:
+            b = random.randint(2, 9) * 10
+            d = random.randint(7,9)
+            n = b + d
+            m = random.randint(11, 99)
+
+            numbers = [n, m]
+            if random.random() < 0.5:
+                numbers = [i*10 for i in numbers]
+            ans = sum(numbers)
+
+            random.shuffle(numbers)
+
+            return Problem(ans, numbers, self.prompt_add.format(*numbers))
+
+        else:
+            n = random.choice([100, 1000])
+            m = random.randint(11, 99)
+            if n / 10 == 100:
+                m = m*10
+            
+            numbers = [n, m]
+            ans = n - m
+
+            return Problem(ans, numbers, self.prompt_sub.format(*numbers))
+
+
+class Lesson16(ProblemSetBaseClass):
+    """ Searching for Compatibles
+
+    Identifying compatibles numbers for various multiples of ten
+    """
+
+    prompt_add = "{0} + {1}"
+    prompt_sub = "{0} - {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    # TODO: add non-compatible subtraction and addition
+    def new_problem(self):
+        
+        if random.random() < 0.5:
+            s = random.randint(1, 9) * 10
+            n = random.randint(1, s-1)
+            m = s - n
+
+            if random.random():
+                n = n * 10
+                m = m * 10
+            
+            numbers = [n, m]
+            random.shuffle(numbers)
+            ans = sum(numbers)
+
+            return Problem(ans, numbers, self.prompt_add.format(*numbers))
+
+        else:
+            s = random.randint(1, 9) * 10
+            n = random.randint(1, 99)
+            m = s + n
+
+            if random.random() < 0.5:
+                n = n * 10
+                m = m * 10
+
+            numbers = [m, n]
+            ans = m - n
+
+            return Problem(ans, numbers, self.prompt_sub.format(*numbers))
+
+
