@@ -465,3 +465,79 @@ class Lesson16(ProblemSetBaseClass):
             return Problem(ans, numbers, self.prompt_sub.format(*numbers))
 
 
+class Lesson18(ProblemSetBaseClass):
+
+    """
+    Make your own compatibles
+
+    """
+
+    prompt = "{0} + {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+
+        if random.random() < 0.5:
+            m = random.randint(10, 200-1) * 5
+        else:
+            m = random.randint(10, 99) * 10
+
+        n = random.randint(11, 99)
+
+        numbers = [n, m]
+        ans = sum(numbers)
+        random.shuffle(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson19(ProblemSetBaseClass):
+    """
+    Adding multiples of 25
+    """
+
+    prompt = "{0} + {1} + {2}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+
+        multiples_of_25 = [25*i for i in [1,2,3,4,5,6,7]]
+        numbers = random.choices(multiples_of_25, k=3)
+
+        ans = sum(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson20(ProblemSetBaseClass):
+    """
+    Using compensation when adding numbers ending in 8 and 9
+    """
+
+    prompt = "{0} + {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+        b = random.choice([8,9,98,99])
+        if b / 10 < 1:
+            n = random.randint(1, 9) * 10 + b
+            m = random.randint(11, 99) if random.random() < 0.5 else random.randint(101, 997)
+        else:
+            n = random.randint(1, 9) * 100 + b
+            m = random.randint(101, 997) if random.random() < 0.5 else random.randint(1001, 9997)
+
+        numbers = [n, m]
+        ans = sum(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+
+
+    
