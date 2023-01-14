@@ -539,5 +539,160 @@ class Lesson20(ProblemSetBaseClass):
 
 
 
+class Lesson21(ProblemSetBaseClass):
+    """
+    Using compensation when subtracting numbers ending in 8 and 9
+    """
+
+    prompt = "{0} - {1}"
+
+    def __init__(self):
+        super().__init__()
 
     
+    def new_problem(self):
+        b = random.choice([8,9,98,99])
+        if b / 10 < 1:
+            n = random.randint(1, 9)*10 + b
+            m = random.randint(n+1, 999)
+        else:
+            n = random.randint(1, 9)*100 + b
+            m = random.randint(n+1,9999)
+        
+        ans = m - n
+        numbers = [m, n]
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+
+class Lesson22(ProblemSetBaseClass):
+    """
+    Multiplying by powers of ten
+    """
+
+    prompt = "{0} x {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+        n = 10**random.randint(1,3)
+        m = random.randint(2,999)
+        ans = m * n
+        numbers = [n,m]
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson23(ProblemSetBaseClass):
+    """
+    Multiplying where there are trailing zeros in one factor
+    """
+
+    prompt = "{0} x {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+        p = random.randint(1,3)
+        n = random.randint(1,9)*10**p
+
+        if random.random() < 0.5:
+            m = random.randint(1,9)
+        else:
+            n = random.randint(2,99)
+        
+        ans = n * m
+        numbers = [n, m]
+        random.shuffle(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson24(ProblemSetBaseClass):
+    """
+    multiplying when there are trailing zeros in two factors
+    """
+
+    prompt = "{0} x {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+        n = rrandom.randint(1,9)*10**random.randint(1,3)
+        m = random.randint(1,9)*10**random.randint(1,3)
+
+        ans = m * n
+        numbers = [m, n]
+        random.shuffle(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson25(ProblemSetBaseClass):
+    """
+    multiplying by expanding a two-digit factor
+    """
+
+    prompt = "{0} x {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+        n = random.randint(11,99)
+        m = random.randint(2,9)
+        ans = n * m
+        numbers = [n, m]
+        random.shuffle(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson26(ProblemSetBaseClass):
+    """
+    multiplying by expanding a three-digit factor
+    """
+    prompt = "{0} x {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+        n = random.randint(2,9)
+        if random.random() < 0.5:
+            m = random.randint(11,99)*10 + random.choice([0, 5])
+        else:
+            m = random.randint(101, 999)
+        
+        ans = m * n
+        numbers = [m, n]
+        random.shuffle(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class Lesson27(ProblemSetBaseClass):
+    """
+    multiplying when one factor ends in nine
+    """
+    prompt = "{0} x {1}"
+
+    def __init__(self):
+        super().__init__()
+
+    def new_problem(self):
+        n = random.randint(2,9)
+        m = random.randint(0,9)*100 + 99
+        if random.random() < 0.5:
+            m /= 100
+        
+        ans = round(m * n, 2) # edge-cases
+        numbers = [m, n]
+        random.shuffle(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
