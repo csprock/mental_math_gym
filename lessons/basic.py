@@ -33,6 +33,52 @@ class TimesTables(ProblemSetBaseClass):
 
 
 
+class AdditionTables(ProblemSetBaseClass):
+
+    prompt = "{0} + {1}"
+
+    def __init__(self, single_digits=True):
+        super().__init__()
+        self.single_digits = single_digits
+
+    def new_problem(self):
+
+        if self.single_digits:
+            n = random.randint(2,9)
+            m = random.randint(2,9)
+        else:
+            n = random.randint(2,99)
+            m = random.randint(2,99)
+
+        numbers = [m, n]
+        ans = sum(numbers)
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
+class SubtractionTables(ProblemSetBaseClass):
+
+    prompt = "{0} - {1}"
+
+    def __init__(self, single_digits=True):
+        super().__init__()
+        self.single_digits = single_digits
+
+    def new_problem(self):
+
+        if self.single_digits:
+            n = random.randint(3,9)
+            m = random.randint(1, n-1)
+        else:
+            n = random.randint(3,99)
+            m = random.randint(1, n-1)
+        
+        numbers = [n, m]
+        ans = n - m
+
+        return Problem(ans, numbers, self.prompt.format(*numbers))
+
+
 
 LESSONS = {
     "Times Tables": TimesTables
