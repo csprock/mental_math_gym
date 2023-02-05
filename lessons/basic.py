@@ -35,7 +35,7 @@ class TimesTables(ProblemSetBaseClass):
 
 class AdditionTables(ProblemSetBaseClass):
 
-    prompt = "{0} + {1}"
+    prompt = "{0} + {1} = "
 
     def __init__(self, single_digits=True):
         super().__init__()
@@ -58,7 +58,7 @@ class AdditionTables(ProblemSetBaseClass):
 
 class SubtractionTables(ProblemSetBaseClass):
 
-    prompt = "{0} - {1}"
+    prompt = "{0} - {1} = "
 
     def __init__(self, single_digits=True):
         super().__init__()
