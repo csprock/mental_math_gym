@@ -3,6 +3,7 @@ FROM python:3.10-alpine
 WORKDIR /app
 
 COPY pyproject.toml /app/pyproject.toml
+COPY alembic.ini /app/alembic.ini
 COPY mathgen /app/mathgen
 COPY backend /app/backend
 
