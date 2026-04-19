@@ -17,4 +17,4 @@ Below is a very high-level archetecture of the application components:
 ## Conventions
 
 * Use a centralized logger module for each component. 
-
+* Always create a new git branch before making changes. 
