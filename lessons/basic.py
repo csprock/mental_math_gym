@@ -1,3 +1,5 @@
+# This file contains the basic lessons, such as times tables, addition tables, and subtraction tables.
+
 import random
 
 from base_classes import Problem

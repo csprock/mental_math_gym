@@ -1,4 +1,4 @@
-# """ Problems from 'Mental Math in the Middle Grades' """
+# Problems from 'Mental Math in the Middle Grades'
 
 import random
 
