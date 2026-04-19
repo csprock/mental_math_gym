@@ -2,9 +2,9 @@
 
 import random
 
-from base_classes import Problem
-from base_classes import ProblemSetBaseClass
-from lessons.utils import * 
+from mathgen.common.problems import Problem
+from mathgen.common.problems import ProblemSetBaseClass
+from mathgen.common.utils import * 
 
 ### Unit 1 Problems ###
 

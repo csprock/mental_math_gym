@@ -2,8 +2,8 @@
 
 import random
 
-from base_classes import Problem
-from base_classes import ProblemSetBaseClass
+from mathgen.common.problems import Problem
+from mathgen.common.problems import ProblemSetBaseClass
 
 
 class TimesTables(ProblemSetBaseClass):

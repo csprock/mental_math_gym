@@ -1,3 +1,4 @@
-dash
-gunicorn
+fastapi
+uvicorn
+sqlalchemy
 ipython
