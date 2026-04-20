@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -47,3 +48,47 @@ class SessionSummary(BaseModel):
     score: float
     seconds_per_problem: float
     missed_problem_ids: list[int]
+
+
+class SessionListItem(BaseModel):
+    """Lightweight session view used by the history list."""
+
+    session_id: int
+    lesson_id: str
+    status: str
+    created_at: dt.datetime
+    completed_at: dt.datetime | None = None
+    total_problems: int
+    score: float | None = None
+    seconds_per_problem: float | None = None
+
+
+class AttemptDTO(BaseModel):
+    id: int
+    attempt_number: int
+    user_answer: float
+    is_correct: bool
+    elapsed_ms: int
+    created_at: dt.datetime
+
+
+class ProblemDetailDTO(BaseModel):
+    """Problem view for detail/review — answer only shown for finished sessions."""
+
+    id: int
+    ordinal: int
+    prompt: str
+    answer: float | None = None
+    attempts: list[AttemptDTO] = []
+
+
+class SessionDetail(BaseModel):
+    session_id: int
+    lesson_id: str
+    status: str
+    params: dict[str, Any]
+    created_at: dt.datetime
+    started_at: dt.datetime | None = None
+    completed_at: dt.datetime | None = None
+    problems: list[ProblemDetailDTO]
+    summary: SessionSummary
