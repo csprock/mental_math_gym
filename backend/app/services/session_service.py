@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from backend.app.db.models import Attempt, PracticeSession, Problem, SessionStatus
 from mathgen.common.registry import LessonMetadata, get_registry
@@ -214,3 +214,74 @@ def complete_session(db: Session, session_id: int) -> SessionSummaryData:
         )
 
     return summary
+
+
+def list_sessions(
+    db: Session,
+    lesson_id: str | None = None,
+    status: SessionStatus | None = None,
+    limit: int = 50,
+    offset: int = 0,
+) -> list[PracticeSession]:
+    """Return sessions newest-first, eager-loading problems for the count."""
+    stmt = (
+        select(PracticeSession)
+        .options(selectinload(PracticeSession.problems))
+        .order_by(PracticeSession.created_at.desc(), PracticeSession.id.desc())
+        .limit(limit)
+        .offset(offset)
+    )
+    if lesson_id is not None:
+        stmt = stmt.where(PracticeSession.lesson_id == lesson_id)
+    if status is not None:
+        stmt = stmt.where(PracticeSession.status == status)
+    return list(db.scalars(stmt))
+
+
+def get_session_detail(db: Session, session_id: int) -> PracticeSession:
+    """Fetch a session with problems and attempts eagerly loaded."""
+    stmt = (
+        select(PracticeSession)
+        .options(selectinload(PracticeSession.problems).selectinload(Problem.attempts))
+        .where(PracticeSession.id == session_id)
+    )
+    session = db.scalars(stmt).one_or_none()
+    if session is None:
+        raise UnknownSessionError(session_id)
+    return session
+
+
+def create_retry_session(db: Session, source_session_id: int) -> PracticeSession:
+    """Create a new session seeded with the missed problems from a completed session."""
+    source = get_session_detail(db, source_session_id)
+    if source.status != SessionStatus.COMPLETED:
+        raise SessionStateError(
+            f"Cannot retry session {source_session_id} with status {source.status.value}; "
+            "complete it first."
+        )
+
+    missed = [p for p in source.problems if not any(a.is_correct for a in p.attempts)]
+    if not missed:
+        raise SessionStateError(
+            f"Session {source_session_id} has no missed problems to retry."
+        )
+
+    new_session = PracticeSession(
+        lesson_id=source.lesson_id,
+        params_json=dict(source.params_json or {}),
+        status=SessionStatus.CREATED,
+    )
+    for i, src in enumerate(missed):
+        new_session.problems.append(
+            Problem(
+                ordinal=i + 1,
+                prompt=src.prompt,
+                answer=src.answer,
+                inputs_json=list(src.inputs_json or []),
+            )
+        )
+
+    db.add(new_session)
+    db.commit()
+    db.refresh(new_session)
+    return new_session
