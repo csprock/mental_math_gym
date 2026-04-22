@@ -1,0 +1,59 @@
+# Dev-oriented compose file for Mental Math Gym.
+#
+# Usage:
+#   docker compose up                  # build (first run), migrate, serve with --reload
+#   docker compose up -d               # same, detached
+#   docker compose logs -f app         # follow logs
+#   docker compose down                # stop; keeps the sqlite volume
+#   docker compose down -v             # stop and wipe the DB volume
+#
+# Running tests inside the container:
+#   docker compose run --rm app sh -c "pip install --quiet pytest httpx && pytest backend/tests -q"
+#
+# The source is bind-mounted so edits to backend/, frontend/, and mathgen/
+# take effect without rebuilding. PYTHONPATH=/app ensures the bind-mounted
+# source (not the pip-installed copy in site-packages) is imported.
+
+services:
+  app:
+    build:
+      context: .
+      # Use host networking during pip install so the build picks up the
+      # host's DNS resolver. Docker's default bridge DNS was failing on
+      # some setups (VPN interference); host networking sidesteps that.
+      network: host
+    image: mental_math_gym:dev
+    container_name: mmg_app
+    ports:
+      - "8050:8050"
+    environment:
+      DATABASE_URL: sqlite:////app/data/mmg.db
+      LOG_LEVEL: INFO
+      PYTHONPATH: /app
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+      - ./mathgen:/app/mathgen
+      - ./alembic.ini:/app/alembic.ini
+      - mmg_data:/app/data
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        mkdir -p /app/data
+        alembic upgrade head
+        exec uvicorn backend.app.main:app \
+          --host 0.0.0.0 --port 8050 \
+          --reload \
+          --reload-dir /app/backend \
+          --reload-dir /app/mathgen
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8050/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mmg_data:
