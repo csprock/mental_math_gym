@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./mmg.db"
     log_level: str = "INFO"
     app_env: str = "local"
+    frontend_dir: str = "frontend"
 
 
 @lru_cache

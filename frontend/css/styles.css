@@ -1,0 +1,127 @@
+/* Layout tweaks on top of pico.classless */
+
+main {
+  padding: 1.5rem 1rem 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+header nav a[aria-current="page"] {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.stack > * + * {
+  margin-top: 1rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.prompt {
+  font-size: 3rem;
+  text-align: center;
+  margin: 1.5rem 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.answer-input {
+  font-size: 2rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-line {
+  display: flex;
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+  color: var(--pico-muted-color);
+  margin-bottom: 0.5rem;
+}
+
+.timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.feedback-correct {
+  color: var(--pico-ins-color, #2e7d32);
+  font-weight: 600;
+}
+
+.feedback-wrong {
+  color: var(--pico-del-color, #c62828);
+  font-weight: 600;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.summary-grid article {
+  margin: 0;
+  text-align: center;
+}
+
+.summary-grid article h3 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.summary-grid article small {
+  color: var(--pico-muted-color);
+}
+
+.chart-container {
+  position: relative;
+  height: 280px;
+  margin-bottom: 1.5rem;
+}
+
+table.sessions td,
+table.sessions th {
+  font-variant-numeric: tabular-nums;
+}
+
+table.sessions tr[data-session-id] {
+  cursor: pointer;
+}
+
+.muted {
+  color: var(--pico-muted-color);
+}
+
+.param-field {
+  margin-bottom: 0.75rem;
+}
+
+.attempt-list {
+  font-size: 0.85em;
+  color: var(--pico-muted-color);
+  margin-top: 0.25rem;
+}
+
+.problem-review {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+}
+
+.problem-review.correct {
+  border-left: 4px solid var(--pico-ins-color, #2e7d32);
+}
+
+.problem-review.missed {
+  border-left: 4px solid var(--pico-del-color, #c62828);
+}
