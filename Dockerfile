@@ -1,12 +1,15 @@
-FROM csprock/python-base:3.10.7-slim-bullseye
+FROM python:3.10-alpine
 
-
-COPY requirements.txt /home/user/requirements.txt
-RUN pip install -r /home/user/requirements.txt && rm /home/user/requirements.txt
-
-COPY . /app
 WORKDIR /app
+
+COPY pyproject.toml /app/pyproject.toml
+COPY alembic.ini /app/alembic.ini
+COPY mathgen /app/mathgen
+COPY backend /app/backend
+COPY frontend /app/frontend
+
+RUN pip install --no-cache-dir /app
 
 EXPOSE 8050
 
-CMD gunicorn -b 0.0.0.0:8050 app:server
+CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8050"]

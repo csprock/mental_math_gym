@@ -2,10 +2,26 @@
 
 import random
 
-from base_classes import Problem
-from base_classes import ProblemSetBaseClass
+from mathgen.common.problems import Problem
+from mathgen.common.problems import ProblemSetBaseClass
+from mathgen.common.registry import LessonParam, register_lesson
 
 
+@register_lesson(
+    id="basic.times_tables",
+    title="Times Tables",
+    description="Multiplication drill over 2..12 (optionally 2..9, and excluding 10 and 11).",
+    unit="Basic",
+    params=(
+        LessonParam("single_digits", "bool", False, "Restrict factors to 2..9."),
+        LessonParam(
+            "exclude_tens_and_elevens",
+            "bool",
+            True,
+            "Exclude 10 and 11 as factors.",
+        ),
+    ),
+)
 class TimesTables(ProblemSetBaseClass):
 
     prompt = "{0} x {1} = "
@@ -35,6 +51,15 @@ class TimesTables(ProblemSetBaseClass):
 
 
 
+@register_lesson(
+    id="basic.addition_tables",
+    title="Addition Tables",
+    description="Addition drill with single- or two-digit addends.",
+    unit="Basic",
+    params=(
+        LessonParam("single_digits", "bool", True, "Restrict addends to 2..9."),
+    ),
+)
 class AdditionTables(ProblemSetBaseClass):
 
     prompt = "{0} + {1} = "
@@ -58,6 +83,15 @@ class AdditionTables(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="basic.subtraction_tables",
+    title="Subtraction Tables",
+    description="Subtraction drill with positive results.",
+    unit="Basic",
+    params=(
+        LessonParam("single_digits", "bool", True, "Restrict operands to 3..9."),
+    ),
+)
 class SubtractionTables(ProblemSetBaseClass):
 
     prompt = "{0} - {1} = "
@@ -79,9 +113,3 @@ class SubtractionTables(ProblemSetBaseClass):
         ans = n - m
 
         return Problem(ans, numbers, self.prompt.format(*numbers))
-
-
-
-LESSONS = {
-    "Times Tables": TimesTables
-}

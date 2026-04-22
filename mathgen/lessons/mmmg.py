@@ -2,12 +2,19 @@
 
 import random
 
-from base_classes import Problem
-from base_classes import ProblemSetBaseClass
-from lessons.utils import * 
+from mathgen.common.problems import Problem
+from mathgen.common.problems import ProblemSetBaseClass
+from mathgen.common.registry import register_lesson
+from mathgen.common.utils import *
 
 ### Unit 1 Problems ###
 
+@register_lesson(
+    id="mmmg.lesson1",
+    title="One Step at a Time",
+    description="Adding multiples of powers of ten.",
+    unit="MMMG Unit 1",
+)
 class Lesson1(ProblemSetBaseClass):
 
     """ One Step at a Time
@@ -37,6 +44,12 @@ class Lesson1(ProblemSetBaseClass):
         return Problem(ans, [z, y, x], self.prompt.format(*[z, y, x]))
         
     
+@register_lesson(
+    id="mmmg.lesson2",
+    title="Using Place Value Names",
+    description="Adding multiples of powers of ten.",
+    unit="MMMG Unit 1",
+)
 class Lesson2(ProblemSetBaseClass):
 
     """ Using Place Values Names
@@ -72,6 +85,12 @@ class Lesson3(ProblemSetBaseClass):
 
     pass
 
+@register_lesson(
+    id="mmmg.lesson4",
+    title="Break it Up #1",
+    description="Adding by expanding the second addend.",
+    unit="MMMG Unit 1",
+)
 class Lesson4(ProblemSetBaseClass):
     
     """ Break it Up #1
@@ -106,6 +125,12 @@ class Lesson4(ProblemSetBaseClass):
         
     
 
+@register_lesson(
+    id="mmmg.lesson5",
+    title="Break it Up #2",
+    description="Adding by expanding the second addend.",
+    unit="MMMG Unit 1",
+)
 class Lesson5(ProblemSetBaseClass):
     
     """ Break it Up #2
@@ -131,6 +156,12 @@ class Lesson5(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson6",
+    title="Dropping Common Zeros",
+    description="Subtracting multiples of powers of ten.",
+    unit="MMMG Unit 1",
+)
 class Lesson6(ProblemSetBaseClass):
     """ Dropping common zeros
 
@@ -181,6 +212,12 @@ class Lesson6(ProblemSetBaseClass):
             return Problem(n1 - n2 - n3, [n1, n2, n3], self.prompt2.format(*[n1, n2, n3]))
 
 
+@register_lesson(
+    id="mmmg.lesson7",
+    title="Dropping Common Zeros",
+    description="Subtracting multiples of ten.",
+    unit="MMMG Unit 1",
+)
 class Lesson7(ProblemSetBaseClass):
     """ Dropping common zeros 
     
@@ -204,6 +241,12 @@ class Lesson7(ProblemSetBaseClass):
 
 
     
+@register_lesson(
+    id="mmmg.lesson8",
+    title="Front-end Focus",
+    description="Subtracting numbers ending in the same digits.",
+    unit="MMMG Unit 1",
+)
 class Lesson8(ProblemSetBaseClass):
     """ Front-end Focus 
     
@@ -239,6 +282,12 @@ class Lesson8(ProblemSetBaseClass):
 
 #### unit 2 ####
 
+@register_lesson(
+    id="mmmg.lesson10",
+    title="Starting at the Left",
+    description="Adding from the front end (when regrouping is needed).",
+    unit="MMMG Unit 2",
+)
 class Lesson10(ProblemSetBaseClass):
     """ Starting at the left 
     
@@ -266,6 +315,12 @@ class Lesson10(ProblemSetBaseClass):
         return Problem(ans, [n1, n2], self.prompt.format(*[n1, n2]))
 
 
+@register_lesson(
+    id="mmmg.lesson11",
+    title="Starting at the Left",
+    description="Subtracting from the front end (when no regrouping is needed).",
+    unit="MMMG Unit 2",
+)
 class Lesson11(ProblemSetBaseClass):
     """ Starting at the left 
     
@@ -300,6 +355,12 @@ class Lesson11(ProblemSetBaseClass):
         return Problem(ans, [arr1, arr2], self.prompt.format(*[arr1, arr2]))
 
 
+@register_lesson(
+    id="mmmg.lesson12",
+    title="Working with Fives",
+    description="Adding by expanding to numbers ending in 5.",
+    unit="MMMG Unit 2",
+)
 class Lesson12(ProblemSetBaseClass):
     """ Working with Fives 
     
@@ -326,6 +387,12 @@ class Lesson12(ProblemSetBaseClass):
         return Problem(ans, [n1, n2], self.prompt.format(*[n1, n2]))
 
 
+@register_lesson(
+    id="mmmg.lesson13",
+    title="Trading Off",
+    description="Adding by making multiples of ten then adjusting.",
+    unit="MMMG Unit 2",
+)
 class Lesson13(ProblemSetBaseClass):
     """ Trading off
     
@@ -353,6 +420,12 @@ class Lesson13(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson14",
+    title="Balancing Subtraction",
+    description="Subtracting by making multiples of ten and adjusting.",
+    unit="MMMG Unit 2",
+)
 class Lesson14(ProblemSetBaseClass):
     """ Balancing Subtraction
     
@@ -379,6 +452,12 @@ class Lesson14(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson15",
+    title="Searching for Compatibles",
+    description="Identifying pairs that sum to 100 and 1000.",
+    unit="MMMG Unit 2",
+)
 class Lesson15(ProblemSetBaseClass):
     """ Searching for Compatibles 
     
@@ -420,6 +499,12 @@ class Lesson15(ProblemSetBaseClass):
             return Problem(ans, numbers, self.prompt_sub.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson16",
+    title="Searching for Compatibles",
+    description="Identifying compatible numbers for various multiples of ten.",
+    unit="MMMG Unit 2",
+)
 class Lesson16(ProblemSetBaseClass):
     """ Searching for Compatibles
 
@@ -465,6 +550,12 @@ class Lesson16(ProblemSetBaseClass):
             return Problem(ans, numbers, self.prompt_sub.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson18",
+    title="Make Your Own Compatibles",
+    description="Adding by forming compatible numbers.",
+    unit="MMMG Unit 2",
+)
 class Lesson18(ProblemSetBaseClass):
 
     """
@@ -493,6 +584,12 @@ class Lesson18(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson19",
+    title="Adding Multiples of 25",
+    description="Adding multiples of 25.",
+    unit="MMMG Unit 2",
+)
 class Lesson19(ProblemSetBaseClass):
     """
     Adding multiples of 25
@@ -513,6 +610,12 @@ class Lesson19(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson20",
+    title="Compensation (8s and 9s)",
+    description="Using compensation when adding numbers ending in 8 and 9.",
+    unit="MMMG Unit 2",
+)
 class Lesson20(ProblemSetBaseClass):
     """
     Using compensation when adding numbers ending in 8 and 9
@@ -539,6 +642,12 @@ class Lesson20(ProblemSetBaseClass):
 
 
 
+@register_lesson(
+    id="mmmg.lesson21",
+    title="Compensation (8s and 9s, Subtraction)",
+    description="Using compensation when subtracting numbers ending in 8 and 9.",
+    unit="MMMG Unit 2",
+)
 class Lesson21(ProblemSetBaseClass):
     """
     Using compensation when subtracting numbers ending in 8 and 9
@@ -566,6 +675,12 @@ class Lesson21(ProblemSetBaseClass):
 
 
 
+@register_lesson(
+    id="mmmg.lesson22",
+    title="Multiplying by Powers of Ten",
+    description="Multiplying by powers of ten.",
+    unit="MMMG Unit 3",
+)
 class Lesson22(ProblemSetBaseClass):
     """
     Multiplying by powers of ten
@@ -585,6 +700,12 @@ class Lesson22(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson23",
+    title="Trailing Zeros (One Factor)",
+    description="Multiplying where there are trailing zeros in one factor.",
+    unit="MMMG Unit 3",
+)
 class Lesson23(ProblemSetBaseClass):
     """
     Multiplying where there are trailing zeros in one factor
@@ -611,6 +732,12 @@ class Lesson23(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson24",
+    title="Trailing Zeros (Two Factors)",
+    description="Multiplying when there are trailing zeros in two factors.",
+    unit="MMMG Unit 3",
+)
 class Lesson24(ProblemSetBaseClass):
     """
     multiplying when there are trailing zeros in two factors
@@ -632,6 +759,12 @@ class Lesson24(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson25",
+    title="Expanding a Two-Digit Factor",
+    description="Multiplying by expanding a two-digit factor.",
+    unit="MMMG Unit 3",
+)
 class Lesson25(ProblemSetBaseClass):
     """
     multiplying by expanding a two-digit factor
@@ -652,6 +785,12 @@ class Lesson25(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson26",
+    title="Expanding a Three-Digit Factor",
+    description="Multiplying by expanding a three-digit factor.",
+    unit="MMMG Unit 3",
+)
 class Lesson26(ProblemSetBaseClass):
     """
     multiplying by expanding a three-digit factor
@@ -675,6 +814,12 @@ class Lesson26(ProblemSetBaseClass):
         return Problem(ans, numbers, self.prompt.format(*numbers))
 
 
+@register_lesson(
+    id="mmmg.lesson27",
+    title="Factor Ending in Nine",
+    description="Multiplying when one factor ends in nine.",
+    unit="MMMG Unit 3",
+)
 class Lesson27(ProblemSetBaseClass):
     """
     multiplying when one factor ends in nine
