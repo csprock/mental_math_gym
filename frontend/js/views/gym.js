@@ -214,7 +214,7 @@ function renderPlay(mount, active) {
     <progress value="${active.cursor}" max="${n}"></progress>
     <div class="prompt">${p.prompt}</div>
     <form id="answer-form" class="stack">
-      <input type="number" step="any" class="answer-input" name="answer" required autofocus />
+      <input type="number" step="any" class="answer-input" name="answer" required />
       <div class="row">
         <button type="submit">Submit</button>
         <button type="button" id="show-answer-btn" class="secondary">Show answer</button>
@@ -228,6 +228,13 @@ function renderPlay(mount, active) {
   const input = root.querySelector('input[name="answer"]');
   const feedbackEl = root.querySelector("#feedback");
   const form = root.querySelector("#answer-form");
+
+  // `autofocus` only fires on first document load, not on re-renders between
+  // problems. Focus explicitly so the user can type → Enter → type without
+  // reaching for the mouse. Defer to the next frame so the browser has
+  // finished laying out the new form before we ask for focus — focusing an
+  // element that was just attached via innerHTML can be flaky otherwise.
+  requestAnimationFrame(() => input.focus());
 
   // Per-problem start time (reset each time we land on a new problem)
   let problemStart = Date.now();
