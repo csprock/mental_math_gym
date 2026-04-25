@@ -110,8 +110,8 @@ def test_lesson_stats_recent_sessions_newest_first(client, db_session):
     assert recent_ids == list(reversed(completed_ids))
 
 
-def test_lesson_stats_counts_problem_correct_even_after_retry(client, db_session):
-    """A problem with a wrong then a right attempt should count once in total_correct."""
+def test_lesson_stats_first_attempt_wrong_does_not_count_as_correct(client, db_session):
+    """A problem answered wrong-then-right counts as missed in total_correct."""
     from backend.app.db.models import PracticeSession
 
     s = _create(client, size=1)
@@ -131,4 +131,26 @@ def test_lesson_stats_counts_problem_correct_even_after_retry(client, db_session
     resp = client.get("/api/v1/lessons/basic.times_tables/stats")
     data = resp.json()
     assert data["total_problems"] == 1
+    assert data["total_correct"] == 0
+    assert data["average_score"] == pytest.approx(0.0)
+
+
+def test_lesson_stats_first_attempt_correct_counts(client, db_session):
+    """Sanity check: a single first-try-correct submission shows up in total_correct."""
+    from backend.app.db.models import PracticeSession
+
+    s = _create(client, size=1)
+    sid = s["session_id"]
+    session = db_session.get(PracticeSession, sid)
+    p = session.problems[0]
+    client.post(
+        f"/api/v1/sessions/{sid}/answers",
+        json={"problem_id": p.id, "user_answer": p.answer, "elapsed_ms": 500},
+    )
+    client.post(f"/api/v1/sessions/{sid}/complete")
+
+    resp = client.get("/api/v1/lessons/basic.times_tables/stats")
+    data = resp.json()
+    assert data["total_problems"] == 1
     assert data["total_correct"] == 1
+    assert data["average_score"] == pytest.approx(1.0)

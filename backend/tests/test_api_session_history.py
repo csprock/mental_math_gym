@@ -176,6 +176,32 @@ def test_retry_missed_creates_session_with_only_missed_problems(client, db_sessi
     assert new["session_id"] != sid
 
 
+def test_retry_missed_includes_first_attempt_wrong_even_if_eventually_correct(
+    client, db_session
+):
+    """Wrong-then-right counts as missed, so it shows up in the retry session.
+
+    Previously a problem with any correct attempt was excluded; that meant
+    retry-mode sessions could never produce a retry list, since the user
+    can't advance until they answer correctly.
+    """
+    from backend.app.db.models import PracticeSession
+
+    body = _create(client, size=1)
+    sid = body["session_id"]
+    session = db_session.get(PracticeSession, sid)
+    p = session.problems[0]
+    _answer(client, sid, p.id, p.answer + 1)  # wrong
+    _answer(client, sid, p.id, p.answer)  # right
+    client.post(f"/api/v1/sessions/{sid}/complete")
+
+    resp = client.post(f"/api/v1/sessions/{sid}/retry-missed")
+    assert resp.status_code == 201, resp.text
+    new = resp.json()
+    assert len(new["problems"]) == 1
+    assert new["problems"][0]["prompt"] == p.prompt
+
+
 def test_retry_missed_rejected_when_no_misses(client, db_session):
     from backend.app.db.models import PracticeSession
 

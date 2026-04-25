@@ -167,15 +167,23 @@ class SessionSummaryData:
     missed_problem_ids: list[int]
 
 
+def _problem_was_correct(problem: Problem) -> bool:
+    # First-try only: in retry mode the user keeps attempting until they
+    # succeed, so "any attempt correct" would always score 100%. Score
+    # reflects what the user knew on the first try.
+    if not problem.attempts:
+        return False
+    return problem.attempts[0].is_correct
+
+
 def compute_summary(session: PracticeSession) -> SessionSummaryData:
     total = len(session.problems)
     correct_count = 0
     total_elapsed_ms = 0
     missed_ids: list[int] = []
     for problem in session.problems:
-        was_correct = any(a.is_correct for a in problem.attempts)
         total_elapsed_ms += sum(a.elapsed_ms for a in problem.attempts)
-        if was_correct:
+        if _problem_was_correct(problem):
             correct_count += 1
         else:
             missed_ids.append(problem.id)
@@ -260,7 +268,7 @@ def create_retry_session(db: Session, source_session_id: int) -> PracticeSession
             "complete it first."
         )
 
-    missed = [p for p in source.problems if not any(a.is_correct for a in p.attempts)]
+    missed = [p for p in source.problems if not _problem_was_correct(p)]
     if not missed:
         raise SessionStateError(
             f"Session {source_session_id} has no missed problems to retry."
