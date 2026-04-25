@@ -268,7 +268,7 @@ def create_retry_session(db: Session, source_session_id: int) -> PracticeSession
             "complete it first."
         )
 
-    missed = [p for p in source.problems if not any(a.is_correct for a in p.attempts)]
+    missed = [p for p in source.problems if not _problem_was_correct(p)]
     if not missed:
         raise SessionStateError(
             f"Session {source_session_id} has no missed problems to retry."
