@@ -191,7 +191,12 @@ def test_submit_answer_after_complete_rejected(client, db_session):
     assert resp.status_code == 400
 
 
-def test_retry_attempts_count_toward_seconds_per_problem(client, db_session):
+def test_first_attempt_wrong_counts_as_missed_even_after_retry(client, db_session):
+    """Retry-mode: a wrong-then-right problem must score as wrong.
+
+    Otherwise retry mode would always score 100% (the user can't advance
+    until they answer correctly).
+    """
     from backend.app.db.models import PracticeSession
 
     body = _create_session(client, size=1)
@@ -211,5 +216,39 @@ def test_retry_attempts_count_toward_seconds_per_problem(client, db_session):
     resp = client.post(f"/api/v1/sessions/{session_id}/complete")
     assert resp.status_code == 200
     data = resp.json()
-    assert data["correct_problems"] == 1  # eventually got it
-    assert data["seconds_per_problem"] == pytest.approx(1.5)  # both attempts counted
+    assert data["correct_problems"] == 0
+    assert data["score"] == 0.0
+    assert data["missed_problem_ids"] == [p.id]
+    # All attempts still contribute to elapsed time so the user sees real practice time.
+    assert data["seconds_per_problem"] == pytest.approx(1.5)
+
+
+def test_score_mixes_first_try_correct_and_first_try_wrong(client, db_session):
+    """Mixed session: only first-try-correct problems contribute to score."""
+    from backend.app.db.models import PracticeSession
+
+    body = _create_session(client, size=2)
+    session_id = body["session_id"]
+    session = db_session.get(PracticeSession, session_id)
+    p_first_right, p_retry = session.problems
+
+    # First problem: correct on first try.
+    client.post(
+        f"/api/v1/sessions/{session_id}/answers",
+        json={"problem_id": p_first_right.id, "user_answer": p_first_right.answer, "elapsed_ms": 500},
+    )
+    # Second problem: wrong then right.
+    client.post(
+        f"/api/v1/sessions/{session_id}/answers",
+        json={"problem_id": p_retry.id, "user_answer": p_retry.answer + 1, "elapsed_ms": 500},
+    )
+    client.post(
+        f"/api/v1/sessions/{session_id}/answers",
+        json={"problem_id": p_retry.id, "user_answer": p_retry.answer, "elapsed_ms": 500},
+    )
+
+    resp = client.post(f"/api/v1/sessions/{session_id}/complete")
+    data = resp.json()
+    assert data["correct_problems"] == 1
+    assert data["score"] == pytest.approx(0.5)
+    assert data["missed_problem_ids"] == [p_retry.id]
