@@ -54,7 +54,9 @@ export async function renderSessionDetail(mount, id) {
 
   const problemsEl = root.querySelector("#problems");
   for (const p of session.problems) {
-    const gotCorrect = p.attempts.some((a) => a.is_correct);
+    // First-try only, matching the backend score. Attempts come back ordered
+    // by attempt_number, so [0] is the first one.
+    const gotCorrect = p.attempts.length > 0 && p.attempts[0].is_correct;
     const div = document.createElement("div");
     div.className =
       "problem-review " + (gotCorrect ? "correct" : p.attempts.length ? "missed" : "");
