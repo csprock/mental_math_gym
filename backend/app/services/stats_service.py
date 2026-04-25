@@ -48,17 +48,22 @@ def lesson_stats(
         or 0
     )
 
-    # A problem counts as "correct" if it has at least one correct attempt.
-    correct_problem_ids_stmt = (
-        select(Problem.id)
-        .join(PracticeSession, Problem.session_id == PracticeSession.id)
-        .join(Attempt, Attempt.problem_id == Problem.id)
-        .where(PracticeSession.lesson_id == lesson_id)
-        .where(PracticeSession.status == SessionStatus.COMPLETED)
-        .where(Attempt.is_correct.is_(True))
-        .group_by(Problem.id)
+    # A problem counts as "correct" only if the FIRST attempt was correct,
+    # matching per-session scoring (see _problem_was_correct). Filtering on
+    # attempt_number == 1 yields at most one row per problem so a plain count
+    # works without GROUP BY.
+    total_correct = (
+        db.scalar(
+            select(func.count(Problem.id))
+            .join(PracticeSession, Problem.session_id == PracticeSession.id)
+            .join(Attempt, Attempt.problem_id == Problem.id)
+            .where(PracticeSession.lesson_id == lesson_id)
+            .where(PracticeSession.status == SessionStatus.COMPLETED)
+            .where(Attempt.attempt_number == 1)
+            .where(Attempt.is_correct.is_(True))
+        )
+        or 0
     )
-    total_correct = len(list(db.scalars(correct_problem_ids_stmt)))
 
     recent_stmt = (
         select(PracticeSession)
