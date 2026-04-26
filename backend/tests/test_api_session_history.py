@@ -230,6 +230,44 @@ def test_retry_missed_unknown_session_404(client):
     assert resp.status_code == 404
 
 
+def test_retry_missed_sets_source_session_id(client, db_session):
+    from backend.app.db.models import PracticeSession
+
+    body = _create(client, size=2)
+    sid = body["session_id"]
+    session = db_session.get(PracticeSession, sid)
+    _answer(client, sid, session.problems[0].id, session.problems[0].answer)
+    _answer(client, sid, session.problems[1].id, session.problems[1].answer + 1)
+    client.post(f"/api/v1/sessions/{sid}/complete")
+
+    new_id = client.post(f"/api/v1/sessions/{sid}/retry-missed").json()["session_id"]
+
+    detail = client.get(f"/api/v1/sessions/{new_id}").json()
+    assert detail["source_session_id"] == sid
+
+    # Original session has no source.
+    src_detail = client.get(f"/api/v1/sessions/{sid}").json()
+    assert src_detail["source_session_id"] is None
+
+
+def test_list_sessions_exposes_source_session_id(client, db_session):
+    """Retries still appear in /sessions; the new field marks them."""
+    from backend.app.db.models import PracticeSession
+
+    body = _create(client, size=1)
+    sid = body["session_id"]
+    session = db_session.get(PracticeSession, sid)
+    _answer(client, sid, session.problems[0].id, session.problems[0].answer + 1)
+    client.post(f"/api/v1/sessions/{sid}/complete")
+
+    rid = client.post(f"/api/v1/sessions/{sid}/retry-missed").json()["session_id"]
+
+    items = client.get("/api/v1/sessions").json()
+    by_id = {item["session_id"]: item for item in items}
+    assert by_id[sid]["source_session_id"] is None
+    assert by_id[rid]["source_session_id"] == sid
+
+
 def test_retry_missed_preserves_params(client, db_session):
     from backend.app.db.models import PracticeSession
 

@@ -135,6 +135,45 @@ def test_lesson_stats_first_attempt_wrong_does_not_count_as_correct(client, db_s
     assert data["average_score"] == pytest.approx(0.0)
 
 
+def test_lesson_stats_excludes_retry_sessions_from_aggregates(client, db_session):
+    """Retry sessions inflate stats (small + usually 100%), so they're excluded.
+
+    Without the fix, completed_sessions would be 2, total_correct 5,
+    and average_score ~0.83 instead of the expected 0.5/3/3.
+    """
+    s = _create(client, size=4)
+    sid = s["session_id"]
+    _play(client, db_session, sid, [True, True, False, False])
+    client.post(f"/api/v1/sessions/{sid}/complete")
+
+    retry = client.post(f"/api/v1/sessions/{sid}/retry-missed").json()
+    rid = retry["session_id"]
+    _play(client, db_session, rid, [True, True])
+    client.post(f"/api/v1/sessions/{rid}/complete")
+
+    data = client.get("/api/v1/lessons/basic.times_tables/stats").json()
+    assert data["completed_sessions"] == 1
+    assert data["total_problems"] == 4
+    assert data["total_correct"] == 2
+    assert data["average_score"] == pytest.approx(0.5)
+
+
+def test_lesson_stats_recent_sessions_excludes_retries(client, db_session):
+    s = _create(client, size=2)
+    sid = s["session_id"]
+    _play(client, db_session, sid, [True, False])
+    client.post(f"/api/v1/sessions/{sid}/complete")
+
+    retry = client.post(f"/api/v1/sessions/{sid}/retry-missed").json()
+    rid = retry["session_id"]
+    _play(client, db_session, rid, [True])
+    client.post(f"/api/v1/sessions/{rid}/complete")
+
+    data = client.get("/api/v1/lessons/basic.times_tables/stats").json()
+    recent_ids = [item["session_id"] for item in data["recent_sessions"]]
+    assert recent_ids == [sid]
+
+
 def test_lesson_stats_first_attempt_correct_counts(client, db_session):
     """Sanity check: a single first-try-correct submission shows up in total_correct."""
     from backend.app.db.models import PracticeSession

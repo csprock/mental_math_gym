@@ -61,6 +61,7 @@ class SessionListItem(BaseModel):
     total_problems: int
     score: float | None = None
     seconds_per_problem: float | None = None
+    source_session_id: int | None = None
 
 
 class AttemptDTO(BaseModel):
@@ -90,5 +91,6 @@ class SessionDetail(BaseModel):
     created_at: dt.datetime
     started_at: dt.datetime | None = None
     completed_at: dt.datetime | None = None
+    source_session_id: int | None = None
     problems: list[ProblemDetailDTO]
     summary: SessionSummary
