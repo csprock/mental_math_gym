@@ -27,6 +27,9 @@ def lesson_stats(
     Averages are macro-averages over sessions (each session weighted equally),
     matching the per-session numbers users see after completing a run.
     """
+    # Retry sessions (source_session_id IS NOT NULL) are excluded from every
+    # aggregate: they're small and usually 100%, which would inflate averages
+    # and make them an unreliable measure of progress (issue #5).
     completed_stmt = (
         select(
             func.count(PracticeSession.id),
@@ -35,6 +38,7 @@ def lesson_stats(
         )
         .where(PracticeSession.lesson_id == lesson_id)
         .where(PracticeSession.status == SessionStatus.COMPLETED)
+        .where(PracticeSession.source_session_id.is_(None))
     )
     completed_count, avg_score, avg_spp = db.execute(completed_stmt).one()
 
@@ -44,6 +48,7 @@ def lesson_stats(
             .join(PracticeSession, Problem.session_id == PracticeSession.id)
             .where(PracticeSession.lesson_id == lesson_id)
             .where(PracticeSession.status == SessionStatus.COMPLETED)
+            .where(PracticeSession.source_session_id.is_(None))
         )
         or 0
     )
@@ -59,6 +64,7 @@ def lesson_stats(
             .join(Attempt, Attempt.problem_id == Problem.id)
             .where(PracticeSession.lesson_id == lesson_id)
             .where(PracticeSession.status == SessionStatus.COMPLETED)
+            .where(PracticeSession.source_session_id.is_(None))
             .where(Attempt.attempt_number == 1)
             .where(Attempt.is_correct.is_(True))
         )
@@ -70,6 +76,7 @@ def lesson_stats(
         .options(selectinload(PracticeSession.problems))
         .where(PracticeSession.lesson_id == lesson_id)
         .where(PracticeSession.status == SessionStatus.COMPLETED)
+        .where(PracticeSession.source_session_id.is_(None))
         .order_by(
             PracticeSession.completed_at.desc().nulls_last(),
             PracticeSession.id.desc(),
