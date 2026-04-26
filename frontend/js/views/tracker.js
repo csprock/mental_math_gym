@@ -10,6 +10,24 @@ import { navigate } from "../router.js";
 
 let chartInstance = null;
 
+const SHOW_RETRIES_KEY = "tracker.showRetries";
+
+function loadShowRetries() {
+  try {
+    return localStorage.getItem(SHOW_RETRIES_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function saveShowRetries(value) {
+  try {
+    localStorage.setItem(SHOW_RETRIES_KEY, value ? "1" : "0");
+  } catch {
+    /* localStorage unavailable; toggle just won't persist */
+  }
+}
+
 export async function renderTracker(mount) {
   const root = document.createElement("section");
   root.className = "stack";
@@ -72,7 +90,13 @@ export async function renderTracker(mount) {
     </article>
 
     <article>
-      <header><strong>Sessions</strong></header>
+      <header class="row">
+        <strong>Sessions</strong>
+        <span class="spacer"></span>
+        <label style="margin:0">
+          <input type="checkbox" id="show-retries" /> Show retry sessions
+        </label>
+      </header>
       <div style="overflow-x:auto">
         <table class="sessions">
           <thead>
@@ -93,6 +117,8 @@ export async function renderTracker(mount) {
 
   const unitSelect = root.querySelector("#unit-select");
   const lessonSelect = root.querySelector("#lesson-select");
+  const showRetriesCheckbox = root.querySelector("#show-retries");
+  showRetriesCheckbox.checked = loadShowRetries();
 
   function refreshLessonOptions() {
     const unit = unitSelect.value;
@@ -125,10 +151,16 @@ export async function renderTracker(mount) {
       scopeTitle = "All units";
     }
 
+    // Aggregates and the chart never include retries: that's the bug from
+    // issue #5. The toggle only controls whether retries appear in the
+    // history table.
+    const nonRetry = scopedSessions.filter((s) => s.source_session_id == null);
+    const tableRows = showRetriesCheckbox.checked ? scopedSessions : nonRetry;
+
     root.querySelector("#scope-title").textContent = scopeTitle;
-    renderSummaryCards(root, scopedSessions);
-    renderChart(root, scopedSessions);
-    renderTable(root, scopedSessions, lessonById);
+    renderSummaryCards(root, nonRetry);
+    renderChart(root, nonRetry);
+    renderTable(root, tableRows, lessonById);
   }
 
   unitSelect.addEventListener("change", () => {
@@ -136,6 +168,10 @@ export async function renderTracker(mount) {
     refreshScope();
   });
   lessonSelect.addEventListener("change", refreshScope);
+  showRetriesCheckbox.addEventListener("change", () => {
+    saveShowRetries(showRetriesCheckbox.checked);
+    refreshScope();
+  });
 
   refreshScope();
 }
@@ -233,9 +269,14 @@ function renderTable(root, scoped, lessonById) {
     const when = s.completed_at
       ? new Date(s.completed_at).toLocaleString()
       : new Date(s.created_at).toLocaleString();
+    const lessonTitle = lessonById.get(s.lesson_id)?.title ?? s.lesson_id;
+    const retryTag =
+      s.source_session_id != null
+        ? ` <small class="muted">(retry)</small>`
+        : "";
     tr.innerHTML = `
       <td>${when}</td>
-      <td>${lessonById.get(s.lesson_id)?.title ?? s.lesson_id}</td>
+      <td>${lessonTitle}${retryTag}</td>
       <td>${s.total_problems}</td>
       <td>${s.score !== null ? `${(s.score * 100).toFixed(0)}%` : "—"}</td>
       <td>${s.seconds_per_problem !== null ? `${s.seconds_per_problem.toFixed(1)}s` : "—"}</td>
