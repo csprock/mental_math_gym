@@ -278,6 +278,7 @@ def create_retry_session(db: Session, source_session_id: int) -> PracticeSession
         lesson_id=source.lesson_id,
         params_json=dict(source.params_json or {}),
         status=SessionStatus.CREATED,
+        source_session_id=source.id,
     )
     for i, src in enumerate(missed):
         new_session.problems.append(
