@@ -34,6 +34,7 @@ def _to_list_item(session: PracticeSession) -> SessionListItem:
         total_problems=len(session.problems),
         score=session.score,
         seconds_per_problem=session.seconds_per_problem,
+        source_session_id=session.source_session_id,
     )
 
 
@@ -48,6 +49,7 @@ def _to_detail(session: PracticeSession) -> SessionDetail:
         created_at=session.created_at,
         started_at=session.started_at,
         completed_at=session.completed_at,
+        source_session_id=session.source_session_id,
         problems=[
             ProblemDetailDTO(
                 id=p.id,
