@@ -49,6 +49,11 @@ class PracticeSession(Base):
     completed_at: Mapped[dt.datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     score: Mapped[float | None] = mapped_column(Float, nullable=True)
     seconds_per_problem: Mapped[float | None] = mapped_column(Float, nullable=True)
+    # NULL for original sessions; set to the source session id for retry sessions
+    # so they can be excluded from progress aggregates (see issue #5).
+    source_session_id: Mapped[int | None] = mapped_column(
+        ForeignKey("sessions.id", ondelete="SET NULL"), nullable=True, index=True
+    )
 
     problems: Mapped[list["Problem"]] = relationship(
         back_populates="session",
